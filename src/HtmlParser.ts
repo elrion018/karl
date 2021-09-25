@@ -78,7 +78,7 @@ class HtmlParser {
 
       if (this.isEndOfInput() || this.isStartWith("</")) break;
 
-      nodes.push();
+      nodes.push(this.parseNode());
     }
 
     return nodes;
