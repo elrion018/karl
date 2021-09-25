@@ -1,6 +1,6 @@
 type Text = string;
 
-class ElementData {
+class KarlElement {
   tagName: string;
   attributes: object;
 
@@ -20,7 +20,7 @@ class ElementData {
 
 class KarlNode {
   children: Array<KarlNode>;
-  nodeType: Text | ElementData;
+  nodeType: Text | KarlElement;
 
   constructor({ children, nodeType }) {
     this.children = children;
@@ -39,6 +39,6 @@ export function createElement(
 ): KarlNode {
   return new KarlNode({
     children,
-    nodeType: new ElementData({ tagName: name, attributes: attrs }),
+    nodeType: new KarlElement({ tagName: name, attributes: attrs }),
   });
 }
