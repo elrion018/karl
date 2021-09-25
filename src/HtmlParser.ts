@@ -1,5 +1,5 @@
 import { numberCharacters, lowerAlphabet, upperAlphabet } from "./constants";
-import { KarlNode } from "./dom";
+import { KarlNode, createText, createElement } from "./dom";
 
 import { assert } from "./utils";
 
@@ -79,9 +79,17 @@ class HtmlParser {
 
     while (true) {
       this.consumeWhitespace();
+
+      if (this.isEndOfInput() || this.isStartWith("</")) break;
+
+      nodes.push();
     }
 
     return nodes;
+  }
+
+  parseNode(): KarlNode {
+    if (this.getCharacter()) return this.parseElement();
   }
 
   parseElement(): KarlNode {
@@ -97,6 +105,16 @@ class HtmlParser {
     assert(this.consumeCharacter() === ">", "character is not >");
 
     return;
+  }
+
+  parseText(): KarlNode {
+    return createText(
+      this.consumeWhile(function (character: string): boolean {
+        if (character !== "<") return true;
+
+        return false;
+      })
+    );
   }
 
   parseTagName(): string {
