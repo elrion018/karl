@@ -1,4 +1,4 @@
-import {} from "./constants";
+import { numberCharacters, lowerAlphabet, upperAlphabet } from "./constants";
 
 interface testFunction {
   (character: string): boolean;
@@ -50,8 +50,15 @@ class HtmlParser {
   }
 
   parseTagName(): string {
-    return this.consumeWhile(function (): boolean {
-      return;
+    return this.consumeWhile(function (character: string): boolean {
+      if (
+        numberCharacters.indexOf(character) ||
+        lowerAlphabet.indexOf(character) ||
+        upperAlphabet.indexOf(character)
+      )
+        return true;
+
+      return false;
     });
   }
 }

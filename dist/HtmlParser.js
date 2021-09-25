@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const constants_1 = require("./constants");
 class HtmlParser {
     constructor(input, position) {
         this.makeInputIterator = function* (input, start = 0) {
@@ -29,6 +32,12 @@ class HtmlParser {
             result += this.consumeCharacter();
         }
         return result;
+    }
+    parseTagName() {
+        return this.consumeWhile(function () {
+            if (constants_1.numbers.includes())
+                return;
+        });
     }
 }
 function test(character) {
