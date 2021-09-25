@@ -1,15 +1,19 @@
-import { Iterator } from "typescript";
+import { generateSeq } from "./utils";
+
+interface testFunction {
+  (character: string): boolean;
+}
 
 class HtmlParser {
-  position: number;
   input: string;
+  position: number;
 
-  constructor({ position, input }) {
-    this.position = position;
+  constructor(input: string, position: number) {
     this.input = input;
+    this.position = position;
   }
 
-  getChar(): string {
+  getCharacter(): string {
     return this.input[this.position];
   }
 
@@ -21,6 +25,12 @@ class HtmlParser {
     return this.position >= this.input.length;
   }
 
+  makeInputIterator = function* (input, start = 0): Generator {
+    for (let i = start; i < input.length; i++) {
+      yield [i, input[i]];
+    }
+  };
+
   consumeCharacter(): string {
     const inputIterator = this.makeInputIterator(this.input, this.position);
     const [currentPosition, currentCharacter] = inputIterator.next().value;
@@ -29,9 +39,30 @@ class HtmlParser {
     return currentCharacter;
   }
 
-  makeInputIterator = function* (input, start = 0): Generator {
-    for (let i = start; i < input.length; i++) {
-      yield [i, input[i]];
+  consumeWhile(test: testFunction): string {
+    let result = "";
+
+    while (!this.isEndOfInput() && test(this.getCharacter())) {
+      result += this.consumeCharacter();
     }
-  };
+
+    return result;
+  }
+
+  parseTagName(): string {
+    return this.consumeWhile(function (): boolean {
+      return;
+    });
+  }
 }
+
+function test(character: string): boolean {
+  if (typeof character === "string") return true;
+
+  return false;
+}
+
+const htmlParser = new HtmlParser("test", 0);
+
+console.log(htmlParser.getCharacter());
+console.log(htmlParser.consumeWhile(test));
