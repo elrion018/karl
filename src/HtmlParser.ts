@@ -42,6 +42,14 @@ class HtmlParser {
     return currentCharacter;
   }
 
+  consumeWhitespace(): void {
+    this.consumeWhile(function (character: string): boolean {
+      if (character === " ") return true;
+
+      return false;
+    });
+  }
+
   consumeWhile(test: testFunction): string {
     let result = "";
 
@@ -63,6 +71,14 @@ class HtmlParser {
 
       return false;
     });
+  }
+
+  parseAttributes() {
+    let attributes = {};
+
+    // while (true) {
+
+    // }
   }
 
   parseElement(): KarlNode {
