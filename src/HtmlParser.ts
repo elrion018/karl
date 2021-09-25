@@ -98,11 +98,13 @@ class HtmlParser {
 
     assert(this.consumeCharacter() === ">", "character is not >");
 
+    const children = this.parseNodes();
+
     assert(this.consumeCharacter() === "<", "character is not <");
     assert(this.consumeCharacter() === "/", "character is not /");
     assert(this.consumeCharacter() === ">", "character is not >");
 
-    return;
+    return createElement(tagName, attributes, children);
   }
 
   parseText(): KarlNode {
