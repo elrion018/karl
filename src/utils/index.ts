@@ -8,3 +8,7 @@ export function generateSeq(
     (_, i) => start + i * step
   );
 }
+
+export function assert(condition: boolean, message: string) {
+  if (!condition) throw new Error(message);
+}

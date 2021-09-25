@@ -1,4 +1,7 @@
 import { numberCharacters, lowerAlphabet, upperAlphabet } from "./constants";
+import { KarlNode } from "./dom";
+
+import { assert } from "./utils";
 
 interface testFunction {
   (character: string): boolean;
@@ -60,6 +63,14 @@ class HtmlParser {
 
       return false;
     });
+  }
+
+  parseElement(): KarlNode {
+    assert(this.consumeCharacter() === "<", "character is not <");
+    const tagName = this.parseTagName();
+    assert(this.consumeCharacter() === ">", "character is not >");
+
+    return;
   }
 }
 

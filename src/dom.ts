@@ -1,6 +1,6 @@
 type Text = string;
 
-class KarlElement {
+export class KarlElement {
   tagName: string;
   attributes: object;
 
@@ -18,7 +18,7 @@ class KarlElement {
   }
 }
 
-class KarlNode {
+export class KarlNode {
   children: Array<KarlNode>;
   nodeType: Text | KarlElement;
 
