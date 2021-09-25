@@ -26,7 +26,12 @@ class HtmlParser {
   }
 
   isStartWith(str: string): boolean {
-    return this.input[this.position] === str ? true : false;
+    const characterArray = Array.from(str);
+    let currentPosition = this.position;
+
+    return characterArray.every((character) => {
+      return this.input[currentPosition++] === character;
+    });
   }
 
   isEndOfInput(): boolean {
@@ -69,9 +74,26 @@ class HtmlParser {
     return result;
   }
 
+  parseNodes(): Array<KarlNode> {
+    let nodes = [];
+
+    while (true) {
+      this.consumeWhitespace();
+    }
+
+    return nodes;
+  }
+
   parseElement(): KarlNode {
     assert(this.consumeCharacter() === "<", "character is not <");
+
     const tagName = this.parseTagName();
+    const attributes = this.parseAttributes();
+
+    assert(this.consumeCharacter() === ">", "character is not >");
+
+    assert(this.consumeCharacter() === "<", "character is not <");
+    assert(this.consumeCharacter() === "/", "character is not /");
     assert(this.consumeCharacter() === ">", "character is not >");
 
     return;
@@ -92,6 +114,7 @@ class HtmlParser {
 
   parseAttrValue() {
     const quote = this.consumeCharacter();
+
     assert(quote === '"', "open quote error");
 
     const value = this.consumeWhile(function (character: string): boolean {
@@ -99,6 +122,7 @@ class HtmlParser {
 
       return false;
     });
+
     assert(this.consumeCharacter() === quote, "close quote error");
 
     return value;
@@ -106,6 +130,7 @@ class HtmlParser {
 
   parseAttr(): AttributeObject {
     const name = this.parseTagName();
+
     assert(
       this.consumeCharacter() === "=",
       "there is no '=' between attribute name and attribute value"
