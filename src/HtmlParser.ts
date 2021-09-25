@@ -3,8 +3,13 @@ import { KarlNode } from "./dom";
 
 import { assert } from "./utils";
 
-interface testFunction {
+interface TestFunction {
   (character: string): boolean;
+}
+
+interface AttributeObject {
+  name: string;
+  value: string;
 }
 
 class HtmlParser {
@@ -50,14 +55,26 @@ class HtmlParser {
     });
   }
 
-  consumeWhile(test: testFunction): string {
+  consumeWhile(test: TestFunction): string {
     let result = "";
 
+    interface AttributeObject {
+      name: string;
+      value: string;
+    }
     while (!this.isEndOfInput() && test(this.getCharacter())) {
       result += this.consumeCharacter();
     }
 
     return result;
+  }
+
+  parseElement(): KarlNode {
+    assert(this.consumeCharacter() === "<", "character is not <");
+    const tagName = this.parseTagName();
+    assert(this.consumeCharacter() === ">", "character is not >");
+
+    return;
   }
 
   parseTagName(): string {
@@ -73,20 +90,45 @@ class HtmlParser {
     });
   }
 
+  parseAttrValue() {
+    const quote = this.consumeCharacter();
+    assert(quote === '"', "open quote error");
+
+    const value = this.consumeWhile(function (character: string): boolean {
+      if (character !== quote) return true;
+
+      return false;
+    });
+    assert(this.consumeCharacter() === quote, "close quote error");
+
+    return value;
+  }
+
+  parseAttr(): AttributeObject {
+    const name = this.parseTagName();
+    assert(
+      this.consumeCharacter() === "=",
+      "there is no '=' between attribute name and attribute value"
+    );
+
+    const value = this.parseAttrValue();
+
+    return { name, value };
+  }
+
   parseAttributes() {
     let attributes = {};
 
-    // while (true) {
+    while (true) {
+      this.consumeWhitespace();
 
-    // }
-  }
+      if (this.getCharacter() === ">") break;
 
-  parseElement(): KarlNode {
-    assert(this.consumeCharacter() === "<", "character is not <");
-    const tagName = this.parseTagName();
-    assert(this.consumeCharacter() === ">", "character is not >");
+      const { name, value } = this.parseAttr();
+      attributes[name] = value;
+    }
 
-    return;
+    return attributes;
   }
 }
 
