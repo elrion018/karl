@@ -1,8 +1,21 @@
 type Text = string;
 
-interface ElementData {
+class ElementData {
   tagName: string;
   attributes: object;
+
+  constructor({ tagName, attributes }) {
+    this.tagName = tagName;
+    this.attributes = attributes;
+  }
+
+  getID() {
+    return this.attributes["id"];
+  }
+
+  getClasses() {
+    return this.attributes["class"];
+  }
 }
 
 class KarlNode {
@@ -26,9 +39,6 @@ export function createElement(
 ): KarlNode {
   return new KarlNode({
     children,
-    nodeType: {
-      tagName: name,
-      attributes: attrs,
-    },
+    nodeType: new ElementData({ tagName: name, attributes: attrs }),
   });
 }
