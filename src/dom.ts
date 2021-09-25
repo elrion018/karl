@@ -18,3 +18,17 @@ class KarlNode {
 export function createText(data: string): KarlNode {
   return new KarlNode({ children: [], nodeType: data });
 }
+
+export function createElement(
+  name: string,
+  attrs: object,
+  children: Array<KarlNode>
+): KarlNode {
+  return new KarlNode({
+    children,
+    nodeType: {
+      tagName: name,
+      attributes: attrs,
+    },
+  });
+}
