@@ -1,4 +1,4 @@
-import { generateSeq } from "./utils";
+import {} from "./constants";
 
 interface testFunction {
   (character: string): boolean;
