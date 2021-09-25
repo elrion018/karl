@@ -63,10 +63,6 @@ class HtmlParser {
   consumeWhile(test: TestFunction): string {
     let result = "";
 
-    interface AttributeObject {
-      name: string;
-      value: string;
-    }
     while (!this.isEndOfInput() && test(this.getCharacter())) {
       result += this.consumeCharacter();
     }
@@ -90,6 +86,8 @@ class HtmlParser {
 
   parseNode(): KarlNode {
     if (this.getCharacter()) return this.parseElement();
+
+    return this.parseText();
   }
 
   parseElement(): KarlNode {
