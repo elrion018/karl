@@ -21,53 +21,12 @@ class HtmlParser {
     this.position = position;
   }
 
-  getCharacter(): string {
-    return this.input[this.position];
-  }
+  parse(): KarlNode {
+    const nodes = this.parseNodes();
 
-  isStartWith(str: string): boolean {
-    const characterArray = Array.from(str);
-    let currentPosition = this.position;
+    if (nodes.length === 1) return nodes.pop();
 
-    return characterArray.every((character) => {
-      return this.input[currentPosition++] === character;
-    });
-  }
-
-  isEndOfInput(): boolean {
-    return this.position >= this.input.length;
-  }
-
-  makeInputIterator = function* (input, start = 0): Generator {
-    for (let i = start; i < input.length; i++) {
-      yield [i, input[i]];
-    }
-  };
-
-  consumeCharacter(): string {
-    const inputIterator = this.makeInputIterator(this.input, this.position);
-    const [currentPosition, currentCharacter] = inputIterator.next().value;
-    this.position += 1;
-
-    return currentCharacter;
-  }
-
-  consumeWhitespace(): void {
-    this.consumeWhile(function (character: string): boolean {
-      if (character === " ") return true;
-
-      return false;
-    });
-  }
-
-  consumeWhile(test: TestFunction): string {
-    let result = "";
-
-    while (!this.isEndOfInput() && test(this.getCharacter())) {
-      result += this.consumeCharacter();
-    }
-
-    return result;
+    return createElement("html", {}, nodes);
   }
 
   parseNodes(): Array<KarlNode> {
@@ -173,6 +132,55 @@ class HtmlParser {
 
     return attributes;
   }
+
+  consumeCharacter(): string {
+    const inputIterator = this.makeInputIterator(this.input, this.position);
+    const [currentPosition, currentCharacter] = inputIterator.next().value;
+    this.position += 1;
+
+    return currentCharacter;
+  }
+
+  consumeWhitespace(): void {
+    this.consumeWhile(function (character: string): boolean {
+      if (character === " ") return true;
+
+      return false;
+    });
+  }
+
+  consumeWhile(test: TestFunction): string {
+    let result = "";
+
+    while (!this.isEndOfInput() && test(this.getCharacter())) {
+      result += this.consumeCharacter();
+    }
+
+    return result;
+  }
+
+  getCharacter(): string {
+    return this.input[this.position];
+  }
+
+  isStartWith(str: string): boolean {
+    const characterArray = Array.from(str);
+    let currentPosition = this.position;
+
+    return characterArray.every((character) => {
+      return this.input[currentPosition++] === character;
+    });
+  }
+
+  isEndOfInput(): boolean {
+    return this.position >= this.input.length;
+  }
+
+  makeInputIterator = function* (input, start = 0): Generator {
+    for (let i = start; i < input.length; i++) {
+      yield [i, input[i]];
+    }
+  };
 }
 
 function test(character: string): boolean {
