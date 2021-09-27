@@ -12,7 +12,7 @@ interface AttributeObject {
   value: string;
 }
 
-class HtmlParser {
+export default class HtmlParser {
   input: string;
   position: number;
 
@@ -44,7 +44,7 @@ class HtmlParser {
   }
 
   parseNode(): KarlNode {
-    if (this.getCharacter()) return this.parseElement();
+    if (this.getCharacter() === "<") return this.parseElement();
 
     return this.parseText();
   }
@@ -61,6 +61,10 @@ class HtmlParser {
 
     assert(this.consumeCharacter() === "<", "character is not <");
     assert(this.consumeCharacter() === "/", "character is not /");
+    assert(
+      this.parseTagName() === tagName,
+      "There is no tag name in closing tag"
+    );
     assert(this.consumeCharacter() === ">", "character is not >");
 
     return createElement(tagName, attributes, children);
@@ -79,9 +83,9 @@ class HtmlParser {
   parseTagName(): string {
     return this.consumeWhile(function (character: string): boolean {
       if (
-        numberCharacters.indexOf(character) ||
-        lowerAlphabet.indexOf(character) ||
-        upperAlphabet.indexOf(character)
+        numberCharacters.indexOf(character) !== -1 ||
+        lowerAlphabet.indexOf(character) !== -1 ||
+        upperAlphabet.indexOf(character) !== -1
       )
         return true;
 
@@ -182,14 +186,3 @@ class HtmlParser {
     }
   };
 }
-
-function test(character: string): boolean {
-  if (typeof character === "string") return true;
-
-  return false;
-}
-
-const htmlParser = new HtmlParser("test", 0);
-
-console.log(htmlParser.getCharacter());
-console.log(htmlParser.consumeWhile(test));
