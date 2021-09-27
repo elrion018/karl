@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createElement = exports.createText = void 0;
+exports.createElement = exports.createText = exports.KarlNode = exports.KarlElement = void 0;
 class KarlElement {
     constructor({ tagName, attributes }) {
         this.tagName = tagName;
@@ -13,12 +13,14 @@ class KarlElement {
         return this.attributes["class"];
     }
 }
+exports.KarlElement = KarlElement;
 class KarlNode {
     constructor({ children, nodeType }) {
         this.children = children;
         this.nodeType = nodeType;
     }
 }
+exports.KarlNode = KarlNode;
 function createText(data) {
     return new KarlNode({ children: [], nodeType: data });
 }
