@@ -15,20 +15,20 @@ class KarlElement {
 }
 exports.KarlElement = KarlElement;
 class KarlNode {
-    constructor({ children, nodeType }) {
+    constructor({ children, nodeDetail }) {
         this.children = children;
-        this.nodeType = nodeType;
+        this.nodeDetail = nodeDetail;
     }
 }
 exports.KarlNode = KarlNode;
 function createText(data) {
-    return new KarlNode({ children: [], nodeType: data });
+    return new KarlNode({ children: [], nodeDetail: data });
 }
 exports.createText = createText;
 function createElement(name, attrs, children) {
     return new KarlNode({
         children,
-        nodeType: new KarlElement({ tagName: name, attributes: attrs }),
+        nodeDetail: new KarlElement({ tagName: name, attributes: attrs }),
     });
 }
 exports.createElement = createElement;

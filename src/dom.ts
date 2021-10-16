@@ -20,16 +20,16 @@ export class KarlElement {
 
 export class KarlNode {
   children: Array<KarlNode>;
-  nodeType: Text | KarlElement;
+  nodeDetail: Text | KarlElement;
 
-  constructor({ children, nodeType }) {
+  constructor({ children, nodeDetail }) {
     this.children = children;
-    this.nodeType = nodeType;
+    this.nodeDetail = nodeDetail;
   }
 }
 
 export function createText(data: string): KarlNode {
-  return new KarlNode({ children: [], nodeType: data });
+  return new KarlNode({ children: [], nodeDetail: data });
 }
 
 export function createElement(
@@ -39,6 +39,6 @@ export function createElement(
 ): KarlNode {
   return new KarlNode({
     children,
-    nodeType: new KarlElement({ tagName: name, attributes: attrs }),
+    nodeDetail: new KarlElement({ tagName: name, attributes: attrs }),
   });
 }
