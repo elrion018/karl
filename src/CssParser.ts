@@ -97,7 +97,14 @@ export class CssParser {
 
       if (character === "#") {
         this.consumeCharacter();
-      }
+        selector.id = this.parseIdentifier();
+      } else if (character === ".") {
+        this.consumeCharacter();
+        selector.class.push(this.parseIdentifier());
+      } else if (character === "*") this.consumeCharacter();
+      else if (isValidIdentifierChar(character))
+        selector.tagName = this.parseIdentifier();
+      else break;
     }
 
     return selector;
