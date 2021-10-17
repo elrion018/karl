@@ -1,4 +1,5 @@
 import { numberCharacters, upperAlphabet, lowerAlphabet } from "./constants";
+import { assert } from "./utils";
 
 type Value = string | number | Color;
 
@@ -73,17 +74,16 @@ export class CssParser {
     let selectors = [];
 
     while (true) {
-      selectors.push();
+      selectors.push(this.parseSelector());
       this.consumeWhitespace();
 
       let character = this.getCharacter();
 
       if (character === "{") break;
-
-      if (character === ",") {
+      else if (character === ",") {
         this.consumeCharacter();
         this.consumeWhitespace();
-      }
+      } else assert(false, `Unexpected Character ${character}`);
     }
 
     return selectors;
