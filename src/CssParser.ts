@@ -112,7 +112,7 @@ export class CssParser {
   }
 
   parseDeclaration(): Declaraction {
-    const propertyName = this.parseIdentifier();
+    const name = this.parseIdentifier();
 
     this.consumeWhitespace();
     assert(
@@ -121,9 +121,18 @@ export class CssParser {
     );
     this.consumeCharacter();
 
-    const value = "";
+    const value = this.parseValue();
 
-    return;
+    this.consumeWhitespace();
+    assert(
+      this.consumeCharacter() === ";",
+      'There is no ";" character at end of declaration'
+    );
+
+    return {
+      name,
+      value,
+    };
   }
 
   parseValue(): Value {
