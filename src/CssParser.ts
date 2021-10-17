@@ -133,7 +133,7 @@ export class CssParser {
   }
 
   parseNumberValue(): Value {
-    return;
+    return `${this.parseNumber()}${this.parseUnit()}`;
   }
 
   parseNumber(): number {
