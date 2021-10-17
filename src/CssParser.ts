@@ -131,7 +131,7 @@ export class CssParser {
 
     if (numberCharacters.indexOf(character) !== -1)
       return this.parseNumberValue();
-    else if (character === "#") return;
+    else if (character === "#") return this.parseColor();
     else return this.parseIdentifier();
   }
 
@@ -158,7 +158,12 @@ export class CssParser {
   parseColor(): Color {
     this.consumeCharacter();
 
-    return;
+    return {
+      r: this.parseHexPairToDecimal(),
+      g: this.parseHexPairToDecimal(),
+      b: this.parseHexPairToDecimal(),
+      a: 255,
+    };
   }
 
   parseHexPairToDecimal(): number {
