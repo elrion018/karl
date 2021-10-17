@@ -64,10 +64,7 @@ export class CssParser {
   }
 
   parseRule(): Rule {
-    let selectors = [];
-    let declarations = [];
-
-    return { selectors, declarations };
+    return { selectors: this.parseSelectors(), declarations: [] };
   }
 
   parseSelectors(): Array<Selector> {
@@ -112,6 +109,39 @@ export class CssParser {
 
   parseIdentifier(): string {
     return this.consumeWhile(isValidIdentifierChar);
+  }
+
+  parseDeclaration(): Declaraction {
+    const propertyName = this.parseIdentifier();
+
+    this.consumeWhitespace();
+    assert(
+      this.consumeCharacter() === ":",
+      'There is no ":" character between property and value'
+    );
+    this.consumeCharacter();
+
+    const value = "";
+
+    return;
+  }
+
+  parseValue(): Value {
+    const character = this.getCharacter();
+
+    if (numberCharacters.indexOf(character) !== -1) return;
+  }
+
+  parseNumberValue(): Value {
+    return;
+  }
+
+  parseNumber(): number {
+    return Number(
+      this.consumeWhile(function (character) {
+        return numberCharacters.indexOf(character) !== -1;
+      })
+    );
   }
 
   consumeCharacter(): string {
