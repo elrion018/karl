@@ -50,23 +50,26 @@ export class CssParser {
   }
 
   parse(): StyleSheet {
-    const rules = this.parse_rules();
+    const rules = this.parseRules();
 
     return new StyleSheet(rules);
   }
 
-  parse_rules() {
+  parseRules() {
     let rules = [];
 
     while (true) {
+      this.consumeWhitespace();
+
       if (this.isEndOfInput()) break;
-      rules.push(this.parse_rule());
+
+      rules.push(this.parseRule());
     }
 
     return rules;
   }
 
-  parse_rule(): Rule {
+  parseRule(): Rule {
     let selectors = [];
     let declarations = [];
 
