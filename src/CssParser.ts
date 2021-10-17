@@ -1,3 +1,5 @@
+import { numberCharacters, upperAlphabet, lowerAlphabet } from "./constants";
+
 type Value = string | number | Color;
 
 interface TestFunction {
@@ -12,9 +14,9 @@ export interface Color {
 }
 
 export interface Selector {
-  tagName?: string;
-  id?: string;
-  class?: Array<string>;
+  tagName: string;
+  id: string;
+  class: Array<string>;
 }
 
 export interface Declaraction {
@@ -22,22 +24,13 @@ export interface Declaraction {
   value: Value;
 }
 
-export class StyleSheet {
+export interface StyleSheet {
   rules: Array<Rule>;
-
-  constructor(rules: Array<Rule>) {
-    this.rules = rules;
-  }
 }
 
-export class Rule {
+export interface Rule {
   selectors: Array<Selector>;
   declarations: Array<Declaraction>;
-
-  constructor(selectors: Array<Selector>, declarations: Array<Declaraction>) {
-    this.selectors = selectors;
-    this.declarations = declarations;
-  }
 }
 
 export class CssParser {
@@ -52,7 +45,7 @@ export class CssParser {
   parse(): StyleSheet {
     const rules = this.parseRules();
 
-    return new StyleSheet(rules);
+    return { rules };
   }
 
   parseRules() {
@@ -73,7 +66,45 @@ export class CssParser {
     let selectors = [];
     let declarations = [];
 
-    return new Rule(selectors, declarations);
+    return { selectors, declarations };
+  }
+
+  parseSelectors(): Array<Selector> {
+    let selectors = [];
+
+    while (true) {
+      selectors.push();
+      this.consumeWhitespace();
+
+      let character = this.getCharacter();
+
+      if (character === "{") break;
+
+      if (character === ",") {
+        this.consumeCharacter();
+        this.consumeWhitespace();
+      }
+    }
+
+    return selectors;
+  }
+
+  parseSelector(): Selector {
+    let selector = { tagName: null, id: null, class: null };
+
+    while (!this.isEndOfInput()) {
+      let character = this.getCharacter();
+
+      if (character === "#") {
+        this.consumeCharacter();
+      }
+    }
+
+    return selector;
+  }
+
+  parseIdentifier(): string {
+    return this.consumeWhile(isValidIdentifierChar);
   }
 
   consumeCharacter(): string {
@@ -115,4 +146,16 @@ export class CssParser {
       yield [i, input[i]];
     }
   };
+}
+
+function isValidIdentifierChar(character: string): boolean {
+  if (
+    numberCharacters.indexOf(character) !== -1 ||
+    upperAlphabet.indexOf(character) !== -1 ||
+    lowerAlphabet.indexOf(character) !== -1 ||
+    character === "-"
+  )
+    return true;
+
+  return false;
 }
