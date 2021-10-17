@@ -22,9 +22,22 @@ export interface Declaraction {
   value: Value;
 }
 
-export interface Rule {
+export class StyleSheet {
+  rules: Array<Rule>;
+
+  constructor(rules: Array<Rule>) {
+    this.rules = rules;
+  }
+}
+
+export class Rule {
   selectors: Array<Selector>;
   declarations: Array<Declaraction>;
+
+  constructor(selectors: Array<Selector>, declarations: Array<Declaraction>) {
+    this.selectors = selectors;
+    this.declarations = declarations;
+  }
 }
 
 export class CssParser {
@@ -36,14 +49,28 @@ export class CssParser {
     this.position = position;
   }
 
+  parse(): StyleSheet {
+    const rules = this.parse_rules();
+
+    return new StyleSheet(rules);
+  }
+
   parse_rules() {
     let rules = [];
 
     while (true) {
       if (this.isEndOfInput()) break;
+      rules.push(this.parse_rule());
     }
 
     return rules;
+  }
+
+  parse_rule(): Rule {
+    let selectors = [];
+    let declarations = [];
+
+    return new Rule(selectors, declarations);
   }
 
   consumeCharacter(): string {
