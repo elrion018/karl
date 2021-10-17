@@ -144,6 +144,14 @@ export class CssParser {
     );
   }
 
+  parseUnit(): string {
+    const unit = this.parseIdentifier();
+
+    if (unit === "px") return unit;
+
+    assert(false, "Unrecognized unit!");
+  }
+
   consumeCharacter(): string {
     const inputIterator = this.makeInputIterator(this.input, this.position);
     const [currentPosition, currentCharacter] = inputIterator.next().value;
