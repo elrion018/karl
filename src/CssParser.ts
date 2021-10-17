@@ -129,7 +129,10 @@ export class CssParser {
   parseValue(): Value {
     const character = this.getCharacter();
 
-    if (numberCharacters.indexOf(character) !== -1) return;
+    if (numberCharacters.indexOf(character) !== -1)
+      return this.parseNumberValue();
+    else if (character === "#") return;
+    else return this.parseIdentifier();
   }
 
   parseNumberValue(): Value {
@@ -150,6 +153,19 @@ export class CssParser {
     if (unit === "px") return unit;
 
     assert(false, "Unrecognized unit!");
+  }
+
+  parseColor(): Color {
+    this.consumeCharacter();
+
+    return;
+  }
+
+  parseHexPairToDecimal(): number {
+    const hexPair = this.input.slice(this.position, this.position + 2);
+    this.position += 2;
+
+    return parseInt(hexPair, 16);
   }
 
   consumeCharacter(): string {
