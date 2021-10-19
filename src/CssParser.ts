@@ -64,7 +64,10 @@ export class CssParser {
   }
 
   parseRule(): Rule {
-    return { selectors: this.parseSelectors(), declarations: [] };
+    return {
+      selectors: this.parseSelectors(),
+      declarations: this.parseDeclarations(),
+    };
   }
 
   parseSelectors(): Array<Selector> {
@@ -133,6 +136,23 @@ export class CssParser {
       name,
       value,
     };
+  }
+
+  parseDeclarations(): Array<Declaraction> {
+    assert(this.getCharacter() === "{", "Declarations start with { character");
+    const declarations = [];
+    while (true) {
+      this.consumeWhitespace();
+
+      if (this.getCharacter() === "}") {
+        this.consumeCharacter();
+        break;
+      }
+
+      declarations.push(this.parseDeclaration());
+    }
+
+    return declarations;
   }
 
   parseValue(): Value {
