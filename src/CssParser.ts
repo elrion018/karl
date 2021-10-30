@@ -7,34 +7,34 @@ interface TestFunction {
   (character: string): boolean;
 }
 
-export interface Color {
+interface Color {
   r: number;
   g: number;
   b: number;
   a: number;
 }
 
-export interface Selector {
-  tagName: string;
-  id: string;
-  class: Array<string>;
+class Selector {
+  tagNames: Array<string>;
+  ids: Array<string>;
+  classes: Array<string>;
 }
 
-export interface Declaraction {
+interface Declaraction {
   name: string;
   value: Value;
 }
 
-export interface StyleSheet {
+interface StyleSheet {
   rules: Array<Rule>;
 }
 
-export interface Rule {
+interface Rule {
   selectors: Array<Selector>;
   declarations: Array<Declaraction>;
 }
 
-export class CssParser {
+export default class CssParser {
   input: string;
   position: number;
 
@@ -90,21 +90,22 @@ export class CssParser {
   }
 
   parseSelector(): Selector {
-    let selector = { tagName: null, id: null, class: null };
+    const selector = { tagNames: [], ids: [], classes: [] };
 
     while (!this.isEndOfInput()) {
-      let character = this.getCharacter();
+      const character = this.getCharacter();
 
       if (character === "#") {
         this.consumeCharacter();
-        selector.id = this.parseIdentifier();
+        selector.ids.push(this.parseIdentifier());
       } else if (character === ".") {
         this.consumeCharacter();
-        selector.class.push(this.parseIdentifier());
+        selector.classes.push(this.parseIdentifier());
       } else if (character === "*") this.consumeCharacter();
       else if (isValidIdentifierChar(character))
-        selector.tagName = this.parseIdentifier();
-      else break;
+        selector.tagNames.push(this.parseIdentifier());
+      else if (character === "{") break;
+      else this.consumeCharacter();
     }
 
     return selector;
@@ -122,7 +123,7 @@ export class CssParser {
       this.consumeCharacter() === ":",
       'There is no ":" character between property and value'
     );
-    this.consumeCharacter();
+    this.consumeWhitespace();
 
     const value = this.parseValue();
 
@@ -139,8 +140,12 @@ export class CssParser {
   }
 
   parseDeclarations(): Array<Declaraction> {
-    assert(this.getCharacter() === "{", "Declarations start with { character");
+    assert(
+      this.consumeCharacter() === "{",
+      "Declarations start with { character"
+    );
     const declarations = [];
+
     while (true) {
       this.consumeWhitespace();
 

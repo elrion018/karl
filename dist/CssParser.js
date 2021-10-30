@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("./constants");
 const utils_1 = require("./utils");
+class Selector {
+}
 class CssParser {
     constructor(input, position) {
         this.makeInputIterator = function* (input, start = 0) {
@@ -50,23 +52,25 @@ class CssParser {
         return selectors;
     }
     parseSelector() {
-        let selector = { tagName: null, id: null, class: [] };
+        const selector = { tagNames: [], ids: [], classes: [] };
         while (!this.isEndOfInput()) {
-            let character = this.getCharacter();
+            const character = this.getCharacter();
             if (character === "#") {
                 this.consumeCharacter();
-                selector.id = this.parseIdentifier();
+                selector.ids.push(this.parseIdentifier());
             }
             else if (character === ".") {
                 this.consumeCharacter();
-                selector.class.push(this.parseIdentifier());
+                selector.classes.push(this.parseIdentifier());
             }
             else if (character === "*")
                 this.consumeCharacter();
             else if (isValidIdentifierChar(character))
-                selector.tagName = this.parseIdentifier();
-            else
+                selector.tagNames.push(this.parseIdentifier());
+            else if (character === "{")
                 break;
+            else
+                this.consumeCharacter();
         }
         return selector;
     }
@@ -140,7 +144,6 @@ class CssParser {
         const inputIterator = this.makeInputIterator(this.input, this.position);
         const [currentPosition, currentCharacter] = inputIterator.next().value;
         this.position += 1;
-        console.log(currentCharacter);
         return currentCharacter;
     }
     consumeWhile(test) {

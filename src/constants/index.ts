@@ -1,7 +1,7 @@
 import { generateSeq } from "../utils";
 
 export const numberCharacters: Array<string> = generateSeq(
-  "1".charCodeAt(0),
+  "0".charCodeAt(0),
   "9".charCodeAt(0),
   1
 ).map((x) => String.fromCharCode(x));
