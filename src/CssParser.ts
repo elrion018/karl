@@ -51,7 +51,7 @@ export default class CssParser {
   }
 
   parseRules() {
-    let rules = [];
+    const rules = [];
 
     while (true) {
       this.consumeWhitespace();
