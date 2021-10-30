@@ -8,4 +8,4 @@ const htmlParser = new HtmlParser(html, 0);
 const cssParser = new CssParser(css, 0);
 
 console.log(htmlParser.parse());
-console.dir(cssParser.parse());
+console.log(cssParser.parse());

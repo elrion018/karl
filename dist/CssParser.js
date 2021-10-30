@@ -2,8 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("./constants");
 const utils_1 = require("./utils");
-class Selector {
-}
 class CssParser {
     constructor(input, position) {
         this.makeInputIterator = function* (input, start = 0) {
@@ -35,11 +33,11 @@ class CssParser {
         };
     }
     parseSelectors() {
-        let selectors = [];
+        const selectors = [];
         while (true) {
             selectors.push(this.parseSelector());
             this.consumeWhitespace();
-            let character = this.getCharacter();
+            const character = this.getCharacter();
             if (character === "{")
                 break;
             else if (character === ",") {
@@ -49,10 +47,13 @@ class CssParser {
             else
                 (0, utils_1.assert)(false, `Unexpected Character ${character}`);
         }
+        selectors.sort(function (a, b) {
+            return b.specificity - a.specificity;
+        });
         return selectors;
     }
     parseSelector() {
-        const selector = { tagNames: [], ids: [], classes: [] };
+        const selector = { tagNames: [], ids: [], classes: [], specificity: 0 };
         while (!this.isEndOfInput()) {
             const character = this.getCharacter();
             if (character === "#") {
@@ -72,6 +73,10 @@ class CssParser {
             else
                 this.consumeCharacter();
         }
+        selector.specificity =
+            selector.ids.length * 100 +
+                selector.classes.length * 10 +
+                selector.tagNames.length;
         return selector;
     }
     parseIdentifier() {

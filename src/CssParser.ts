@@ -14,10 +14,11 @@ interface Color {
   a: number;
 }
 
-class Selector {
+interface Selector {
   tagNames: Array<string>;
   ids: Array<string>;
   classes: Array<string>;
+  specificity: number;
 }
 
 interface Declaraction {
@@ -71,13 +72,13 @@ export default class CssParser {
   }
 
   parseSelectors(): Array<Selector> {
-    let selectors = [];
+    const selectors = [];
 
     while (true) {
       selectors.push(this.parseSelector());
       this.consumeWhitespace();
 
-      let character = this.getCharacter();
+      const character = this.getCharacter();
 
       if (character === "{") break;
       else if (character === ",") {
@@ -86,11 +87,15 @@ export default class CssParser {
       } else assert(false, `Unexpected Character ${character}`);
     }
 
+    selectors.sort(function (a, b) {
+      return b.specificity - a.specificity;
+    });
+
     return selectors;
   }
 
   parseSelector(): Selector {
-    const selector = { tagNames: [], ids: [], classes: [] };
+    const selector = { tagNames: [], ids: [], classes: [], specificity: 0 };
 
     while (!this.isEndOfInput()) {
       const character = this.getCharacter();
@@ -107,6 +112,11 @@ export default class CssParser {
       else if (character === "{") break;
       else this.consumeCharacter();
     }
+
+    selector.specificity =
+      selector.ids.length * 100 +
+      selector.classes.length * 10 +
+      selector.tagNames.length;
 
     return selector;
   }
